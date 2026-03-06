@@ -441,6 +441,17 @@ This project demonstrates:
 
 ---
 
+![ref](src/P1.png)
+![ref](src/P2.png)
+![ref](src/P3.png)
+![ref](src/P4.png)
+![ref](src/P5.png)
+![ref](src/P6.png)
+![ref](src/P7.png)
+![ref](src/P8.png)
+![ref](src/P9.png)
+![ref](src/P10.png)
+
 # Future Improvements
 
 Potential extensions:
