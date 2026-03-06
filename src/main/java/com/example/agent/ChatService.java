@@ -39,13 +39,15 @@ public class ChatService {
                 .chatMemoryRepository(chatMemoryRepository)
                 .maxMessages(20)
                 .build();
-
+                
         this.chatClient = chatClientBuilder
-                .defaultSystem(DEFAULT_SYSTEM_PROMPT)
-                .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        QuestionAnswerAdvisor.builder(vectorStore).build())
-                .build();
+        .defaultSystem(DEFAULT_SYSTEM_PROMPT)
+        .defaultAdvisors(
+                MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                QuestionAnswerAdvisor.builder(vectorStore).build()
+        )
+        .defaultTools(new DateTimeTools(), new WeatherTools())
+        .build();
     }
 
     public Flux<String> chat(String prompt, String username) {
