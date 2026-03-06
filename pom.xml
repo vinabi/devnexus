@@ -111,6 +111,19 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<from>
+						<image>public.ecr.aws/docker/library/amazoncorretto:25-alpine</image>
+					</from>
+					<container>
+						<user>1000</user>
+					</container>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

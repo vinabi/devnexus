@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiagent
+  namespace: aiagent
+  labels:
+    app: aiagent
+spec:
+  type: ClusterIP
+  selector:
+    app: aiagent
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP

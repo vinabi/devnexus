@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiagent
+  namespace: aiagent
+  labels:
+    app: aiagent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiagent
+  template:
+    metadata:
+      labels:
+        app: aiagent
+    spec:
+      serviceAccountName: aiagent
+      nodeSelector:
+        karpenter.sh/nodepool: workshop
+      containers:
+        - name: aiagent
+          image: 616559003864.dkr.ecr.us-east-1.amazonaws.com/aiagent:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configtree:/mnt/secrets-store/"
+            - name: SPRING_AI_MCP_CLIENT_STREAMABLEHTTP_CONNECTIONS_SERVER1_URL
+              value: "http://internal-k8s-mcpserve-mcpserve-da95dc80ae-557872352.us-east-1.elb.amazonaws.com"
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_AFEsm8MgF"
+          resources:
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            failureThreshold: 6
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            failureThreshold: 6
+            periodSeconds: 5
+            initialDelaySeconds: 10
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            failureThreshold: 10
+            periodSeconds: 5
+            initialDelaySeconds: 20
+          volumeMounts:
+            - name: secrets-store
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 10"]
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: aiagent-secrets
