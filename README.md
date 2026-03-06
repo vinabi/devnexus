@@ -681,4 +681,6 @@ The architecture includes:
 
 These patterns enable scalable enterprise AI applications.
 
+Author: ([Nayab Irfan](https://github.com/vinabi/prepper))
+
 ```
