@@ -46,9 +46,8 @@ MCP Server
 ▼
 Unicorn Store Service
 
-![alt text](images/D1.png)
-
 ```
+![alt text](src/D1.png)
 
 ---
 
@@ -101,7 +100,7 @@ Amazon EKS | Kubernetes deployment |
 Amazon ECS | container deployment |
 MCP | tool communication protocol |
 
-![alt text](images/D2.png)
+![alt text](src/D2.png)
 
 ---
 
@@ -181,7 +180,7 @@ spring.ai.chat.memory.repository.jdbc.initialize-schema=always
 
 ---
 
-![alt text](images/D3.png)
+![alt text](src/D3.png)
 
 # Retrieval Augmented Generation (RAG)
 
@@ -274,7 +273,7 @@ The MCP server exposes tools such as:
 
 The AI agent automatically discovers these tools.
 
-![alt text](images/D4.png)
+![alt text](src/D4.png)
 
 ---
 
