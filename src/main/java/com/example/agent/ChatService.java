@@ -8,6 +8,7 @@ import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
 import org.springframework.ai.chat.memory.repository.jdbc.PostgresChatMemoryRepositoryDialect;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -27,7 +28,11 @@ public class ChatService {
     private final ChatClient chatClient;
     private final VectorStore vectorStore;
 
-    public ChatService(ChatClient.Builder chatClientBuilder, DataSource dataSource, VectorStore vectorStore) {
+    public ChatService(ChatClient.Builder chatClientBuilder,
+                       DataSource dataSource,
+                       VectorStore vectorStore,
+                       ToolCallbackProvider tools) {
+
         this.vectorStore = vectorStore;
 
         var chatMemoryRepository = JdbcChatMemoryRepository.builder()
@@ -39,15 +44,16 @@ public class ChatService {
                 .chatMemoryRepository(chatMemoryRepository)
                 .maxMessages(20)
                 .build();
-                
+
         this.chatClient = chatClientBuilder
-        .defaultSystem(DEFAULT_SYSTEM_PROMPT)
-        .defaultAdvisors(
-                MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                QuestionAnswerAdvisor.builder(vectorStore).build()
-        )
-        .defaultTools(new DateTimeTools(), new WeatherTools())
-        .build();
+                .defaultSystem(DEFAULT_SYSTEM_PROMPT)
+                .defaultAdvisors(
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore).build()
+                )
+                .defaultTools(new DateTimeTools(), new WeatherTools())
+                .defaultToolCallbacks(tools)
+                .build();
     }
 
     public Flux<String> chat(String prompt, String username) {
